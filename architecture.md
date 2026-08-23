@@ -243,7 +243,7 @@ Also tag which claims each item supports or contradicts, and flag weak, irreleva
 Aggregate all evaluated evidence for a task into one verdict:
 
 - `sufficient` — reliable, corroborated evidence exists → proceed.
-- `partial` — some angle answered, real gap remains → proceed, gap gets documented.
+- `partial` — some angle answered, real gap remains → proceed, gap gets documented and will be clearly mentioned in final answer.
 - `insufficient` — no reliable evidence to support a conclusion → triggers the retry loop back to Stage 2.
 
 ### Output
