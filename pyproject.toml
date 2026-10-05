@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "researchflow"
+version = "0.1.0"
+description = "A stateful multi-agent research platform built with LangGraph"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph",
+    "langgraph-checkpoint-sqlite",
+    "langchain-core",
+    "langchain-community",
+    "langchain-google-genai",
+    "langchain-text-splitters",
+    "chromadb",
+    "duckduckgo-search",
+    "pydantic",
+    "pydantic-settings",
+    "pypdf",
+    "python-dotenv",
+    "tenacity",
+    "fastapi",
+    "uvicorn[standard]",
+]
+
+[project.scripts]
+researchflow-api = "researchflow.api.app:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

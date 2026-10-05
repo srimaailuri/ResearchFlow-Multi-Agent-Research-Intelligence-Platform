@@ -1,0 +1,420 @@
+[
+  {
+    "id": "Q001",
+    "question": "What problem does Retrieval-Augmented Generation (RAG) address, and how does its use of parametric and non-parametric memory help address that problem?",
+    "type": "conceptual",
+    "source_documents": [
+      "RAG.pdf"
+    ],
+    "expected_answer": "RAG addresses limitations of parametric-only language models, including difficulty updating or revising knowledge and the possibility of hallucinations. It combines parametric memory in the generator with a non-parametric retrieval index so that external knowledge can be retrieved and incorporated during generation.",
+    "expected_topics": [
+      "parametric memory",
+      "non-parametric memory",
+      "knowledge updating",
+      "knowledge revision",
+      "hallucination",
+      "retriever",
+      "generator"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q002",
+    "question": "What are the main stages of a modern RAG pipeline according to the RAG survey, and what is the purpose of each stage?",
+    "type": "factual_structural",
+    "source_documents": [
+      "RAG_with_LLM_survey.pdf"
+    ],
+    "expected_answer": "The survey organizes RAG techniques around pre-retrieval, retrieval, post-retrieval, and generation stages. These stages address preparing or modifying the query and documents, retrieving relevant information, refining or reranking retrieved information, and generating the final response using the retrieved context.",
+    "expected_topics": [
+      "pre-retrieval",
+      "retrieval",
+      "post-retrieval",
+      "generation",
+      "query manipulation",
+      "document modification",
+      "reranking"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q003",
+    "question": "What is the difference between RAG-Sequence and RAG-Token, and how does each model use retrieved documents during generation?",
+    "type": "comparison",
+    "source_documents": [
+      "RAG.pdf"
+    ],
+    "expected_answer": "RAG-Sequence assumes that the same retrieved document is responsible for the entire generated sequence, whereas RAG-Token allows different retrieved documents to contribute to different generated tokens.",
+    "expected_topics": [
+      "RAG-Sequence",
+      "RAG-Token",
+      "retrieved documents",
+      "latent documents",
+      "sequence-level generation",
+      "token-level generation",
+      "marginalization"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q004",
+    "question": "How does ReAct combine reasoning and acting, and why is this different from using reasoning-only or acting-only approaches?",
+    "type": "conceptual_comparison",
+    "source_documents": [
+      "ReAct.pdf"
+    ],
+    "expected_answer": "ReAct interleaves reasoning traces, actions, and observations. Reasoning can decompose and guide a task, while actions interact with an external environment to obtain information. The resulting observations can then inform subsequent reasoning and actions, unlike approaches that rely only on internal reasoning or only on actions.",
+    "expected_topics": [
+      "reasoning",
+      "acting",
+      "thought",
+      "action",
+      "observation",
+      "external environment",
+      "task decomposition",
+      "reasoning-action interaction"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q005",
+    "question": "How did ReAct perform across HotpotQA, FEVER, ALFWorld, and WebShop, and what do the results indicate about the role of reasoning and external interaction?",
+    "type": "analytical",
+    "source_documents": [
+      "ReAct.pdf"
+    ],
+    "expected_answer": "ReAct demonstrated benefits across both knowledge-intensive and interactive tasks. On HotpotQA and FEVER, ReAct was competitive with reasoning-based approaches and benefited from combining reasoning and acting. On ALFWorld and WebShop, ReAct improved task success compared with acting-only or relevant baseline approaches. The results indicate that combining internal reasoning with external interaction can improve task solving and adaptability.",
+    "expected_topics": [
+      "HotpotQA",
+      "FEVER",
+      "ALFWorld",
+      "WebShop",
+      "reasoning",
+      "acting",
+      "external information",
+      "task success",
+      "reasoning-action combination"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q006",
+    "question": "How does Toolformer decide which API calls to retain during training, and what role does the filtering step play?",
+    "type": "process_multihop",
+    "source_documents": [
+      "Toolformer.pdf"
+    ],
+    "expected_answer": "Toolformer generates candidate API calls, executes them, and evaluates whether the API result improves the model's prediction of future tokens. API calls that provide sufficient improvement according to the filtering criterion are retained in the training data, while unhelpful calls are discarded. This filtering helps construct useful self-supervised training examples for learning tool use.",
+    "expected_topics": [
+      "candidate API calls",
+      "API execution",
+      "future-token prediction",
+      "loss reduction",
+      "perplexity-based filtering",
+      "filtering threshold",
+      "self-supervised learning",
+      "tool use"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q007",
+    "question": "What are the key differences between ReAct and Toolformer in how they use external tools?",
+    "type": "multi_document_comparison",
+    "source_documents": [
+      "ReAct.pdf",
+      "Toolformer.pdf"
+    ],
+    "expected_answer": "ReAct uses an interleaved reasoning and action process in which the model reasons, takes an action, receives an observation, and continues reasoning. Toolformer focuses on teaching a language model when and how to use APIs through self-supervised generation, execution, filtering, and fine-tuning of API calls.",
+    "expected_topics": [
+      "ReAct",
+      "Toolformer",
+      "reasoning-action loop",
+      "observations",
+      "API calls",
+      "self-supervised learning",
+      "fine-tuning",
+      "tool selection"
+    ],
+    "expected_source_count": 2
+  },
+  {
+    "id": "Q008",
+    "question": "Both RAG and ReAct use external information to improve LLM behavior. How does external information enter the reasoning or generation process in each approach?",
+    "type": "cross_document_comparison",
+    "source_documents": [
+      "RAG.pdf",
+      "ReAct.pdf"
+    ],
+    "expected_answer": "RAG retrieves external documents using a retriever and conditions the generator on those retrieved documents. ReAct obtains external information by taking actions in an environment and receiving observations, which are then incorporated into subsequent reasoning and actions.",
+    "expected_topics": [
+      "RAG",
+      "ReAct",
+      "retrieval",
+      "external documents",
+      "generator",
+      "actions",
+      "observations",
+      "reasoning",
+      "external environment"
+    ],
+    "expected_source_count": 2
+  },
+  {
+    "id": "Q009",
+    "question": "What limitations of Toolformer and ReAct suggest that an agentic research system should support iterative tool use rather than relying on a single tool interaction?",
+    "type": "analytical_multi_document",
+    "source_documents": [
+      "ReAct.pdf",
+      "Toolformer.pdf"
+    ],
+    "expected_answer": "Toolformer identifies limitations in chained and interactive tool use because its API calls are generated independently and its approach does not support interactive browsing or repeated query refinement. ReAct demonstrates an iterative reasoning-action-observation loop in which the model can use observations to guide subsequent actions. Together, these ideas motivate an agentic research system that can perform multiple tool calls, evaluate results, reformulate queries, and continue the research process.",
+    "expected_topics": [
+      "Toolformer limitations",
+      "tool chaining",
+      "interactive tool use",
+      "query reformulation",
+      "ReAct loop",
+      "reasoning",
+      "action",
+      "observation",
+      "iterative research",
+      "multiple tool calls"
+    ],
+    "expected_source_count": 2
+  },
+  {
+    "id": "Q010",
+    "question": "A research system needs to answer a complex question using retrieved documents, external tools, and evidence evaluation. What ideas from these four papers could be combined to design such a system?",
+    "type": "multi_hop_architecture",
+    "source_documents": [
+      "RAG.pdf",
+      "RAG_with_LLM_survey.pdf",
+      "ReAct.pdf",
+      "Toolformer.pdf"
+    ],
+    "expected_answer": "The system could combine RAG-style retrieval to obtain external knowledge, RAG evaluation techniques to assess retrieval and response quality, ReAct-style reasoning and action loops to iteratively investigate a question, and Toolformer-inspired ideas for deciding when and how external tools can be used. The system could retrieve evidence, reason about missing information, call appropriate tools, evaluate the resulting evidence, and synthesize a grounded answer.",
+    "expected_topics": [
+      "retrieval",
+      "RAG",
+      "retrieval evaluation",
+      "response evaluation",
+      "reasoning",
+      "acting",
+      "tool calling",
+      "evidence evaluation",
+      "iterative research",
+      "grounded answer",
+      "multi-agent or agentic workflow"
+    ],
+    "expected_source_count": 4
+  },
+  {
+    "id": "Q011",
+    "question": "Why is memory important for autonomous LLM agents, and what limitations arise when an agent relies only on its current context window?",
+    "type": "conceptual",
+    "source_documents": [
+      "Memory for Autonomous LLM Agents.pdf"
+    ],
+    "expected_answer": "Memory allows an autonomous agent to persist, organize, and selectively recall information across interactions. Without memory, agents repeatedly rediscover information, repeat failed actions, and fail to accumulate useful knowledge or behavioral patterns across sessions. Memory therefore enables adaptation over longer time horizons.",
+    "expected_topics": [
+      "agent memory",
+      "context window",
+      "long-term interaction",
+      "persistent knowledge",
+      "experience",
+      "repeated mistakes",
+      "adaptation"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q012",
+    "question": "How does the survey formalize agent memory as a write-manage-read loop, and why is memory management more than simply appending new records?",
+    "type": "factual_structural",
+    "source_documents": [
+      "Memory for Autonomous LLM Agents.pdf"
+    ],
+    "expected_answer": "The survey models memory as a loop in which the agent reads accumulated memory before acting and then updates memory using the current input, action, observation, and reward-like signals. Memory management is not simple append-only storage because a practical system must summarize, deduplicate, prioritize, resolve contradictions, and sometimes delete information.",
+    "expected_topics": [
+      "write-manage-read",
+      "memory read",
+      "memory update",
+      "summarization",
+      "deduplication",
+      "priority scoring",
+      "contradiction handling",
+      "deletion"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q013",
+    "question": "What are the four temporal memory types described in the survey, and how do working, episodic, semantic, and procedural memory differ?",
+    "type": "comparison",
+    "source_documents": [
+      "Memory for Autonomous LLM Agents.pdf"
+    ],
+    "expected_answer": "Working memory contains information currently available in the context window. Episodic memory stores concrete experiences such as interactions, tool calls, and observations. Semantic memory stores abstracted and de-contextualized knowledge or facts. Procedural memory stores reusable skills, procedures, and executable plans.",
+    "expected_topics": [
+      "working memory",
+      "episodic memory",
+      "semantic memory",
+      "procedural memory",
+      "temporal scope",
+      "skills",
+      "experiences",
+      "abstract knowledge"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q014",
+    "question": "Compare context-resident memory, retrieval-augmented memory stores, and hierarchical memory in terms of their strengths and limitations.",
+    "type": "comparison",
+    "source_documents": [
+      "Memory for Autonomous LLM Agents.pdf"
+    ],
+    "expected_answer": "Context-resident memory is simple and infrastructure-free but is limited by context capacity, summarization drift, and attentional dilution. Retrieval-augmented memory stores external interaction records and can scale to large histories, but retrieval relevance and query formulation become important challenges. Hierarchical memory separates active context from recall and archival storage, allowing different access patterns but introducing orchestration and paging risks.",
+    "expected_topics": [
+      "context-resident memory",
+      "retrieval-augmented memory",
+      "hierarchical memory",
+      "context limits",
+      "summarization drift",
+      "retrieval relevance",
+      "paging",
+      "orchestration"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q015",
+    "question": "Why does the survey argue that classical retrieval metrics such as Precision@k and nDCG are insufficient for evaluating agent memory?",
+    "type": "analytical",
+    "source_documents": [
+      "Memory for Autonomous LLM Agents.pdf"
+    ],
+    "expected_answer": "Classical retrieval metrics measure whether relevant records are retrieved, but they do not determine whether the agent uses those records correctly or whether the retrieval was worth its latency and cost. Agent memory evaluation also needs to consider decision quality, staleness, contradictions, forgetting, efficiency, and governance.",
+    "expected_topics": [
+      "Precision@k",
+      "nDCG",
+      "memory quality",
+      "decision quality",
+      "staleness",
+      "contradiction",
+      "forgetting",
+      "latency",
+      "governance"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q016",
+    "question": "What are the four layers of the practical memory evaluation stack proposed in the survey, and what does each layer measure?",
+    "type": "factual_structural",
+    "source_documents": [
+      "Memory for Autonomous LLM Agents.pdf"
+    ],
+    "expected_answer": "The four layers are task effectiveness, memory quality, efficiency, and governance. Task effectiveness measures outcomes such as success rate and factual correctness. Memory quality measures retrieval precision/recall, contradiction, staleness, and coverage. Efficiency measures latency, memory-related tokens, retrieval calls, and storage growth. Governance measures privacy leakage, deletion compliance, and access-scope violations.",
+    "expected_topics": [
+      "task effectiveness",
+      "memory quality",
+      "efficiency",
+      "governance",
+      "retrieval precision",
+      "retrieval recall",
+      "staleness",
+      "latency",
+      "privacy",
+      "deletion compliance"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q017",
+    "question": "What problem does RAGCHECKER address, and why does it use fine-grained claim-level evaluation instead of evaluating an entire response as a single unit?",
+    "type": "conceptual",
+    "source_documents": [
+      "RAGChecker.pdf"
+    ],
+    "expected_answer": "RAGCHECKER addresses the difficulty of reliably diagnosing RAG systems because they contain separate retrieval and generation components and often produce long-form responses. It decomposes responses and ground-truth answers into claims and evaluates entailment at the claim level, allowing correct, incorrect, and missing claims to be distinguished and making error diagnosis more actionable.",
+    "expected_topics": [
+      "RAGCHECKER",
+      "claim extraction",
+      "claim entailment",
+      "retriever evaluation",
+      "generator evaluation",
+      "long-form responses",
+      "correct claims",
+      "incorrect claims",
+      "missing claims"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q018",
+    "question": "How does RAGCHECKER distinguish retrieval errors from generator errors, and which metrics are used to diagnose each component?",
+    "type": "analytical",
+    "source_documents": [
+      "RAGChecker.pdf"
+    ],
+    "expected_answer": "Retrieval errors occur when the retriever fails to return complete or relevant context, while generator errors occur when the generator fails to identify or correctly use information in the retrieved context. RAGCHECKER diagnoses retrieval using claim recall and context precision, while generator behavior is examined through metrics such as context utilization, faithfulness, noise sensitivity, hallucination, and self-knowledge.",
+    "expected_topics": [
+      "retrieval errors",
+      "generator errors",
+      "claim recall",
+      "context precision",
+      "context utilization",
+      "faithfulness",
+      "noise sensitivity",
+      "hallucination",
+      "self-knowledge"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q019",
+    "question": "What trade-off did RAGCHECKER identify between improving retrieval recall and introducing noise into the generator's context?",
+    "type": "analytical",
+    "source_documents": [
+      "RAGChecker.pdf"
+    ],
+    "expected_answer": "Increasing retrieval recall can provide more of the information needed to answer a question, but fixed-size retrieved chunks may also contain additional irrelevant or misleading information. RAGCHECKER found that higher claim recall can therefore increase generator sensitivity to relevant noise. This illustrates that improving retrieval coverage does not automatically improve generation quality unless the generator can distinguish useful information from noise.",
+    "expected_topics": [
+      "retrieval recall",
+      "claim recall",
+      "context noise",
+      "noise sensitivity",
+      "generator behavior",
+      "chunking",
+      "retrieval-generation trade-off"
+    ],
+    "expected_source_count": 1
+  },
+  {
+    "id": "Q020",
+    "question": "How could the memory evaluation framework from the memory survey and the fine-grained RAG evaluation approach from RAGCHECKER be combined to evaluate a long-running research agent?",
+    "type": "multi_hop_architecture",
+    "source_documents": [
+      "Memory for Autonomous LLM Agents.pdf",
+      "RAGChecker.pdf"
+    ],
+    "expected_answer": "A long-running research agent could evaluate memory at multiple levels. The memory framework could measure task effectiveness, memory quality, efficiency, and governance across sessions, while RAGCHECKER-style claim-level evaluation could diagnose whether retrieved memories or documents contain the evidence needed for the answer and whether the generator faithfully uses that evidence. Together, they could evaluate both long-term memory behavior and the quality of individual retrieval-and-generation steps.",
+    "expected_topics": [
+      "agent memory",
+      "long-running agent",
+      "multi-session evaluation",
+      "task effectiveness",
+      "memory quality",
+      "retrieval quality",
+      "claim-level evaluation",
+      "faithfulness",
+      "hallucination",
+      "efficiency",
+      "governance",
+      "research agent"
+    ],
+    "expected_source_count": 2
+  }
+]

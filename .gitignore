@@ -1,0 +1,12 @@
+.env
+.venv/
+.chroma/
+.checkpoints/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+live_run_output*.json
+live_run_output*.txt
+live_run_stderr*.txt
+Data/evaluate_json/runs/
