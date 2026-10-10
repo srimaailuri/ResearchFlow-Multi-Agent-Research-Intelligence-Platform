@@ -14,7 +14,8 @@ from pydantic import BaseModel, Field
 from researchflow.api.jobs import JobStore, job_to_payload
 from researchflow.config.settings import get_settings
 from researchflow.graph.bootstrap import setup_research_graph, shutdown_research_graph
-from researchflow.graph.invoke import graph_invoke_config, invoke_research_graph
+from researchflow.graph.invoke import graph_invoke_config, invoke_research_graph, replay_research_graph
+from researchflow.observability.agenteval_export import to_agenteval_trace
 from researchflow.observability import get_request_id, log_context
 from researchflow.state import initial_research_state
 
@@ -74,6 +75,7 @@ class ResearchResponse(BaseModel):
     validation_issues: list[dict[str, Any]]
     elapsed_seconds: float
     full_state: dict[str, Any] | None = None
+    agenteval_trace: dict[str, Any] | None = None
 
 
 class JobCreateResponse(BaseModel):
@@ -257,10 +259,62 @@ async def get_research_run_checkpoint(run_id: str) -> RunCheckpointResponse:
     )
 
 
+def _require_checkpointer(settings) -> None:
+    if settings.checkpointer_mode.strip().lower() in {"none", "off", "disabled"}:
+        raise HTTPException(status_code=501, detail="Checkpointer is disabled")
+
+
+@app.get("/research/runs/{run_id}/agenteval-trace")
+async def get_research_run_agenteval_trace(run_id: str) -> dict[str, Any]:
+    """AgentEval-compatible execution trace from checkpointed state."""
+    if _graph is None:
+        raise HTTPException(status_code=503, detail="Research graph is not initialized")
+    settings = get_settings()
+    _require_checkpointer(settings)
+
+    snapshot = await asyncio.to_thread(_graph.get_state, graph_invoke_config(run_id))
+    if snapshot is None or not snapshot.values:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return to_agenteval_trace(dict(snapshot.values), system_version=app.version)
+
+
+@app.post("/research/runs/{run_id}/replay")
+async def replay_research_run(run_id: str) -> dict[str, Any]:
+    """Continue a checkpointed run when LangGraph has pending next steps."""
+    if _graph is None:
+        raise HTTPException(status_code=503, detail="Research graph is not initialized")
+    settings = get_settings()
+    _require_checkpointer(settings)
+
+    try:
+        state = await asyncio.to_thread(
+            replay_research_graph,
+            _graph,
+            run_id,
+            request_id=get_request_id(),
+        )
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    return {
+        "run_id": run_id,
+        "validation_status": state.get("validation_status"),
+        "agenteval_trace": to_agenteval_trace(state, system_version=app.version),
+    }
+
+
 @app.post("/research/run", response_model=ResearchResponse)
 async def run_research(
     body: ResearchRequest,
     full_state: bool = Query(False, description="Include complete LangGraph state in the response"),
+    include_agenteval_trace: bool = Query(
+        False,
+        description="Include AgentEval execution trace JSON in the response",
+    ),
 ) -> ResearchResponse:
     if _graph is None:
         raise HTTPException(status_code=503, detail="Research graph is not initialized")
@@ -276,8 +330,13 @@ async def run_research(
 
     elapsed = time.perf_counter() - started
     response = _summarize_state(body.question, state, elapsed, run_id=run_id)
+    updates: dict[str, Any] = {}
     if full_state:
-        response = response.model_copy(update={"full_state": state})
+        updates["full_state"] = state
+    if include_agenteval_trace:
+        updates["agenteval_trace"] = to_agenteval_trace(state, system_version=app.version)
+    if updates:
+        response = response.model_copy(update=updates)
     return response
 
 

@@ -8,11 +8,13 @@ class Settings(BaseSettings):
     model_name: str = "gemini-3.8-flash"
     evaluate_model_name: str | None = None
     embedding_model: str = "gemini-embedding-001"
-    llm_max_retries: int = 4
+    llm_max_retries: int = 6
     llm_retry_min_wait_seconds: float = 2.0
+    llm_retry_max_wait_seconds: float = 120.0
+    llm_min_interval_seconds: float = 12.0
     max_retrieval_attempts: int = 2
     max_synthesis_attempts: int = 2
-    max_evaluate_workers: int = 4
+    max_evaluate_workers: int = 1
     max_concurrent_research_jobs: int = 2
 
     rag_documents_dir: str = "Data/test_documents"

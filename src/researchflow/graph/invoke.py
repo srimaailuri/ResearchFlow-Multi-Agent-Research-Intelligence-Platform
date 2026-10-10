@@ -53,3 +53,34 @@ def invoke_research_graph(
             evidence_count=len(result.get("evidence") or []),
         )
         return result, run_id
+
+
+def replay_research_graph(
+    graph: Any,
+    run_id: str,
+    *,
+    request_id: str | None = None,
+) -> ResearchState:
+    """
+    Continue a checkpointed run from its last saved state (LangGraph invoke with input None).
+
+    Only applicable when the graph has pending next steps for this thread_id.
+    """
+    req_id = request_id or get_request_id() or run_id
+    config = graph_invoke_config(run_id)
+    snapshot = graph.get_state(config)
+    if snapshot is None or not snapshot.values:
+        raise LookupError(f"Run not found: {run_id}")
+    if not snapshot.next:
+        raise RuntimeError("Run has no pending steps to replay (graph already at END)")
+
+    with log_context(request_id=req_id, run_id=run_id):
+        bind_context(request_id=req_id, run_id=run_id)
+        log_event(logger, "graph_replay_start", run_id=run_id)
+        try:
+            result: ResearchState = graph.invoke(None, config)
+        except Exception:
+            log_event(logger, "graph_replay_failed")
+            raise
+        log_event(logger, "graph_replay_complete", validation_status=result.get("validation_status"))
+        return result

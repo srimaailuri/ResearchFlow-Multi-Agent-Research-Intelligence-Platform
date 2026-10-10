@@ -6,7 +6,7 @@ Multi-agent research pipeline built with **LangGraph**: plan sub-questions, retr
 
 
 
-Design docs: [docs/architecture.md](docs/architecture.md), [docs/Project-definition.md](docs/Project-definition.md). Learning notes: [docs/learning.md](docs/learning.md).
+Design docs: [docs/architecture.md](docs/architecture.md), [docs/Project-definition.md](docs/Project-definition.md), [docs/project-overview.md](docs/project-overview.md). Learning notes: [docs/learning.md](docs/learning.md).
 
 
 
@@ -168,6 +168,17 @@ pytest
 
 
 Unit tests mock retrieval and LLM calls (no network or API key required).
+
+### AgentEval trace export
+
+After a run, export pipeline state for [AgentEval](../AgentEval/):
+
+```python
+from researchflow.observability.agenteval_export import to_agenteval_trace
+payload = to_agenteval_trace(result_state)
+```
+
+Benchmark scoring in this repo remains for local convenience; portfolio evaluation is intended to live in AgentEval.
 
 
 
